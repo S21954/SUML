@@ -58,6 +58,6 @@ elif option =="Tłumacz z angielskiego na język niemiecki":
             st.success('Tłumaczenie gotowe!')
             st.write("Tłumaczenie:")
             st.write(output)
-            st.balloons()
+            #st.balloons()
 
 st.write('by Marcin Milczarzewicz s21954')
