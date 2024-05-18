@@ -17,13 +17,13 @@ st.image('pjatk_logo.png', caption="Polsko-Japońska Akademia Technik Komputerow
 
 
 
-def typewriter(input: str, speed: int):
-                tokens = input.split()
-                container = st.empty()
-                for index in range(len(tokens) + 1):
-                    curr_full_text = " ".join(tokens[:index])
-                    container.markdown(curr_full_text)
-                    time.sleep(1 / speed)
+#def typewriter(input: str, speed: int):
+#                tokens = input.split()
+#                container = st.empty()
+#                for index in range(len(tokens) + 1):
+#                    curr_full_text = " ".join(tokens[:index])
+#                    container.markdown(curr_full_text)
+#                    time.sleep(1 / speed)
 
 option = st.selectbox(
     "Opcje",
@@ -57,7 +57,7 @@ elif option =="Tłumacz z angielskiego na język niemiecki":
         else:
             st.success('Tłumaczenie gotowe!')
             st.write("Tłumaczenie:")
-            typewriter(input=output, speed=3)
+            st.write(output)
             st.balloons()
 
 st.write('by Marcin Milczarzewicz s21954')
