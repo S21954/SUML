@@ -42,7 +42,6 @@ def main():
     if(st.button(Label='Sprawdź czy przeżyjesz!')):
         survival = model.predict(data)
         s_confidence = model.predict_proba(data)
-         with prediction:
         st.header("Czy dana osoba przeżyje? {0}".format("Tak" if survival[0] == 1 else "Nie"))
         if survival[0] == 1:
             st.balloons()
