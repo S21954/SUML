@@ -24,6 +24,10 @@ def main():
 
     with overview:
         st.title("Czy przeżyłbyś katastrofę")
+        
+        if st.button(label='Sprawdź czy przeżyjesz!'):
+            survival = model.predict(data)
+            s_confidence = model.predict_proba(data)
 
     with left:
         sex_radio = st.radio("Płeć", list(sex_d.keys()), format_func=lambda x: sex_d[x])
@@ -40,9 +44,6 @@ def main():
         [[pclass_radio, age_slider, sibsp_slider, parch_slider, fare_slider, embarked_radio, sex_radio]], 
         columns=['Pclass', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked', 'male']
     )
-    if st.button(label='Sprawdź czy przeżyjesz!'):
-        survival = model.predict(data)
-        s_confidence = model.predict_proba(data)
 
         if survival:
             st.header("Czy dana osoba przeżyje? {0}".format("Tak" if survival[0] == 1 else "Nie"))
