@@ -1,63 +1,54 @@
 import streamlit as st
-import time
-import streamlit as st
-from transformers import pipeline
+import pickle
+import pandas as pd
+from datetime import datetime
 
-st.title('Zadanie streamlit SUML 🖥️')
+startTime = datetime.now()
 
-st.header('Przetwarzanie języka naturalnego oraz prosty tłumacz angielsko-niemiecki')
+filename = "model.h5"
+model = pickle.load(open(filename, "rb"))
 
-st.write('Funkcja tłumaczenie korzysta z modelu google-t5/t5-base (https://huggingface.co/google-t5/t5-base)')
+sex_d = {0: "Kobieta", 1: "Mężczyzna"}
+pclass_d = {0: "Pierwsza", 1: "Druga", 2: "Trzecia"}
+embarked_d = {0: "Cherbourg", 1: "Queenstown", 2: "Southampton"}
 
-st.write('Aby przetłumaczyć tekst z angielskiego na niemiecki wybierz z listy odpowiednią opcję')
+def main():
+    overview = st.container()
+    left, right = st.columns(2)
+    prediction = st.container()
 
-st.write('Zadanie przygotowane na zaliczenie z zajęć SUML na PJATK.')
+    st.image(
+        "https://media1.popsugar-assets.com/files/thumbor/7CwCuGAKxTrQ4wPyOBpKjSsd1JI/fit-in/2048xorig/filters:format_auto-!!-:strip_icc-!!-/2017/04/19/743/n/41542884/5429b59c8e78fbc4_MCDTITA_FE014_H_1_.JPG"
+    )
 
-st.image('pjatk_logo.png', caption="Polsko-Japońska Akademia Technik Komputerowych")
+    with overview:
+        st.title("Czy przeżyłbyś katastrofę")
 
+    with left:
+        sex_radio = st.radio("Płeć", list(sex_d.keys()), format_func=lambda x: sex_d[x])
+        pclass_radio = st.radio("Klasa", list(pclass_d.keys()), format_func=lambda x: pclass_d[x])
+        embarked_radio = st.radio("Port zaokrętowania", list(embarked_d.keys()), format_func=lambda x: embarked_d[x])
 
+    with right:
+        age_slider = st.slider("Wiek", value=50, min_value=1, max_value=100)
+        sibsp_slider = st.slider("# Liczba rodzeństwa i/lub partnera", min_value=0, max_value=8)
+        parch_slider = st.slider("# Liczba rodziców i/lub dzieci", min_value=0, max_value=6)
+        fare_slider = st.slider("Cena biletu", min_value=0, max_value=500, step=10)
 
-#def typewriter(input: str, speed: int):
-#                tokens = input.split()
-#                container = st.empty()
-#                for index in range(len(tokens) + 1):
-#                    curr_full_text = " ".join(tokens[:index])
-#                    container.markdown(curr_full_text)
-#                    time.sleep(1 / speed)
+    data = pd.DataFrame(
+        [[pclass_radio, age_slider, sibsp_slider, parch_slider, fare_slider, embarked_radio, sex_radio]], 
+        columns=['Pclass', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked', 'male']
+    )
+    survival = model.predict(data)
+    s_confidence = model.predict_proba(data)
 
-option = st.selectbox(
-    "Opcje",
-    [
-        "Wydźwięk emocjonalny tekstu (eng)",
-        "Tłumacz z angielskiego na język niemiecki",
-    ],
-)
+    with prediction:
+        st.header("Czy dana osoba przeżyje? {0}".format("Tak" if survival[0] == 1 else "Nie"))
+        if survival[0] == 1:
+            st.balloons()
+        st.subheader("Pewność predykcji {0:.2f} %".format(s_confidence[0][survival[0]] * 100))
 
-if option == "Wydźwięk emocjonalny tekstu (eng)":
-    input = st.text_area(label="Wpisz tekst")
-    if input:
-        classifier = pipeline("sentiment-analysis")
-        answer = classifier(input)
-        st.write(answer)
-
-elif option =="Tłumacz z angielskiego na język niemiecki":
-    input = st.text_area(label="Wpisz tekst po angielsku. Maksymalna długość tłumaczonego tekstu to 2000 znaków.")
-    if len(input) > 2000:
-        st.error('Tłumaczony tekst nie moze być dłuszy niz 2000 znaków.')
-    elif input:
-        with st.spinner(text='Tłumaczenie moze chwilę potrwać. \n Proszę o cierpliwość..'):
-
-            model = pipeline("translation_en_to_de", model="t5-base")
-            input_translated = model(input, max_length=2000)
-            output = input_translated[0]['translation_text']
-
-
-        if output == input:
-            st.error('Nie udało się przetłumaczyć tekstu. Upewnij się, ze jest on w języku angielskim.')
-        else:
-            st.success('Tłumaczenie gotowe!')
-            st.write("Tłumaczenie:")
-            st.write(output)
-            #st.balloons()
-
-st.write('by Marcin Milczarzewicz s21954')
+    st.title('Marcin Milczarzewicz s21954')
+  
+if __name__ == "__main__":
+    main()
