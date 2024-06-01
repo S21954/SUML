@@ -11,10 +11,7 @@ model = pickle.load(open(filename, "rb"))
 sex_d = {0: "Kobieta", 1: "Mężczyzna"}
 pclass_d = {0: "Pierwsza", 1: "Druga", 2: "Trzecia"}
 embarked_d = {0: "Cherbourg", 1: "Queenstown", 2: "Southampton"}
-survival = model.predict(pd.DataFrame(
-        [[1, 1, 1, 1, 1, 1, 1]], 
-        columns=['Pclass', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked', 'male']
-    ))
+
 
 def main():
     overview = st.container()
@@ -46,9 +43,10 @@ def main():
     if st.button(label='Sprawdź czy przeżyjesz!'):
         survival = model.predict(data)
         s_confidence = model.predict_proba(data)
-        
-    st.header("Czy dana osoba przeżyje? {0}".format("Tak" if survival[0] == 1 else "Nie"))
-    st.subheader("Pewność predykcji {0:.2f} %".format(s_confidence[0][survival[0]] * 100))
+
+        if survival:
+            st.header("Czy dana osoba przeżyje? {0}".format("Tak" if survival[0] == 1 else "Nie"))
+            st.subheader("Pewność predykcji {0:.2f} %".format(s_confidence[0][survival[0]] * 100))
 
    
 
