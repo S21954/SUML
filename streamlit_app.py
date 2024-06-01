@@ -44,7 +44,7 @@ def main():
         survival = model.predict(data)
         s_confidence = model.predict_proba(data)
 
-        if survival:
+        if survival[0]:
             st.header("Czy dana osoba przeżyje? {0}".format("Tak" if survival[0] == 1 else "Nie"))
             st.subheader("Pewność predykcji {0:.2f} %".format(s_confidence[0][survival[0]] * 100))
 
