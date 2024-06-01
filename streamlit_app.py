@@ -39,14 +39,16 @@ def main():
         [[pclass_radio, age_slider, sibsp_slider, parch_slider, fare_slider, embarked_radio, sex_radio]], 
         columns=['Pclass', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked', 'male']
     )
-    survival = model.predict(data)
-    s_confidence = model.predict_proba(data)
-
-    with prediction:
+    if(st.button(Label='Sprawdź czy przeżyjesz!')):
+        on_click='survival = model.predict(data)
+        s_confidence = model.predict_proba(data)'
+         with prediction:
         st.header("Czy dana osoba przeżyje? {0}".format("Tak" if survival[0] == 1 else "Nie"))
         if survival[0] == 1:
             st.balloons()
         st.subheader("Pewność predykcji {0:.2f} %".format(s_confidence[0][survival[0]] * 100))
+
+   
 
     st.title('Marcin Milczarzewicz s21954')
   
