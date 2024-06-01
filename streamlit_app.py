@@ -39,7 +39,7 @@ def main():
         [[pclass_radio, age_slider, sibsp_slider, parch_slider, fare_slider, embarked_radio, sex_radio]], 
         columns=['Pclass', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked', 'male']
     )
-    if st.button(Label='Sprawdź czy przeżyjesz!'):
+    if st.button(label='Sprawdź czy przeżyjesz!'):
         survival = model.predict(data)
         s_confidence = model.predict_proba(data)
         
